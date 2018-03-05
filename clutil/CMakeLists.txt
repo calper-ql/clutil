@@ -1,9 +1,12 @@
 cmake_minimum_required(VERSION 3.5)
 
 find_package(OpenCL REQUIRED)
+message(STATUS "OPENCL_LIB:" ${OpenCL_LIBRARY})
+message(STATUS "OPENCL_INCLUDE:" ${OpenCL_INCLUDE_DIRS})
+
 find_package(Threads REQUIRED)
 
-set(CMAKE_CXX_FLAGS "-Wall -Wextra")
+set(CMAKE_CXX_FLAGS "-Wall")
 set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++14")
 set(CMAKE_CXX_FLAGS_RELEASE "-ofast")
 set(CMAKE_C_STANDARD 11)
@@ -14,8 +17,8 @@ set(SOURCES
         common_cl_pick_device.c
         common_cl_create_context.c 
 		)
-
 add_subdirectory(clog)
+include_directories(${OpenCL_INCLUDE_DIRS})
 set(LIBS ${OpenCL_LIBRARY} clog ${CMAKE_THREAD_LIBS_INIT})
 
 add_library(clutil ${SOURCES})

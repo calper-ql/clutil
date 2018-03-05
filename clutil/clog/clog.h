@@ -1,7 +1,12 @@
 #ifndef CLOG_H_
 #define CLOG_H_
 
+#ifdef _WIN32
+#include <io.h>
+#else
 #include <unistd.h>
+#endif
+
 #include "ansi.h"
 
 extern unsigned short _clog_spaces;

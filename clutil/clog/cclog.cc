@@ -1,4 +1,5 @@
 #include "cclog.h"
+#include <string>
 
 unsigned short _cclog_spaces = 0;
 
@@ -27,10 +28,11 @@ void cclog_erase_line() {
 }
 
 void cclog_print_spaces() {
-    char sp[_cclog_spaces + 1];
+    char* sp = (char*)malloc(_cclog_spaces+1);
     for (unsigned i = 0; i < _cclog_spaces; i++) sp[i] = ' ';
     sp[_cclog_spaces] = '\0';
     printf("%s", sp);
+	free(sp);
 }
 
 void cclog_print(std::string str) {

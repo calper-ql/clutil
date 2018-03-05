@@ -31,10 +31,11 @@ void clog_erase_line() {
 }
 
 void clog_print_spaces() {
-    char sp[_clog_spaces + 2];
+    char* sp = (char*) malloc(_clog_spaces+2);
     for (unsigned i = 0; i < _clog_spaces; i++) sp[i] = ' ';
     sp[_clog_spaces] = '\0';
     printf("%s", sp);
+	free(sp);
 }
 
 void clog_print(char *str) {
