@@ -1,0 +1,17 @@
+#ifndef CLOG_ANSI_H
+#define CLOG_ANSI_H
+
+#define CLOG_ANSI_DEFAULT "\033[0m"
+#define CLOG_ANSI_BLACK "\033[1;30m"
+#define CLOG_ANSI_RED "\033[1;31m"
+#define CLOG_ANSI_GREEN "\033[1;32m"
+#define CLOG_ANSI_YELLOW "\033[1;33m"
+#define CLOG_ANSI_BLUE "\033[1;34m"
+#define CLOG_ANSI_MAGENTA "\033[1;35m"
+#define CLOG_ANSI_CYAN "\033[1;36m"
+#define CLOG_ANSI_WHITE "\033[1;37"
+#define CLOG_ANSI_ERASE_LINE "\r\033[2K"
+#define CLOG_ANSI_CURSOR_UP "\r\033[E"
+#define CLOG_ANSI_CURSOR_DOWN "\r\033[F"
+
+#endif
