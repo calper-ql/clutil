@@ -31,7 +31,7 @@ class CLBuffer {
 
 		void write();
 
-		cl_mem* device_data();
+		cl_mem device_data();
 
 		std::vector<T> *local_data();
 
@@ -96,8 +96,8 @@ std::vector<T> *CLBuffer<T>::local_data(){
 }
 
 template<class T>
-cl_mem* CLBuffer<T>::device_data() {
-	return &mem;
+cl_mem CLBuffer<T>::device_data() {
+	return mem;
 }
 
 template<class T>

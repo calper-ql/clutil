@@ -1,35 +1,51 @@
 #include "common_cl.h"
 #include <stdio.h>
 
-char *__cccp_load_file(char *path) {
+struct __str_desc {
+	char* ptr;
+	size_t len;
+};
+
+struct __str_desc __cccp_load_file(char *path) {
     FILE *source;
     char *source_str;
 
     clog_wait(path, "LOADING");
     source = fopen(path, "r");
+
+	struct __str_desc dsc;
+
     if (source) {
+		
         fseek(source, 0L, SEEK_END);
         size_t size = ftell(source);
+		dsc.len = size+1;
+
         if (size == 0) {
             clog_failure("file size is 0");
-            return NULL;
+			dsc.ptr = NULL;
+            return dsc;
         }
         rewind(source);
         source_str = (char *) malloc(sizeof(char) * size + 1);
+		dsc.ptr = source_str;
         for (size_t i = 0; i < size; i++) {
-            source_str[i] = fgetc(source);
+			int kc = fgetc(source);
+			if (kc != -1) source_str[i] = kc;
+			else source_str[i] = ' ';
         }
         source_str[size] = '\0';
         clog_raw_log(path, "LOADED", CLOG_ANSI_MAGENTA);
-        printf("\n-------------------------\n");
-        printf("%s\n--------------------------\n", source_str);
+        printf("\n------------SRC-------------\n");
+        printf("%s\n-----------------------------\n", source_str);
 
     } else {
-        clog_failure(path);
-        return NULL;
+		clog_failure("File not found");
+		dsc.ptr = NULL;
+        return dsc;
     }
 
-    return source_str;
+    return dsc;
 }
 
 struct COMMON_CL_PROGRAM *common_cl_compile_program(struct COMMON_CL_CONTEXT *context, char *path, char *kernel_name) {
@@ -37,7 +53,8 @@ struct COMMON_CL_PROGRAM *common_cl_compile_program(struct COMMON_CL_CONTEXT *co
     printf("\n");
     clog_add_space();
     clog_add_space();
-    char *source_str = __cccp_load_file(path);
+	struct __str_desc dsc = __cccp_load_file(path);
+	char *source_str = dsc.ptr;
     if (!source_str) {
         clog_remove_space();
         clog_remove_space();
@@ -50,8 +67,8 @@ struct COMMON_CL_PROGRAM *common_cl_compile_program(struct COMMON_CL_CONTEXT *co
 
     struct COMMON_CL_PROGRAM *program = (struct COMMON_CL_PROGRAM *) malloc(sizeof(struct COMMON_CL_PROGRAM));
     program->context = context;
-
-    program->program = clCreateProgramWithSource(context->context, 1, (const char **) &source_str, NULL, &err);
+	size_t str_len = dsc.len;
+    program->program = clCreateProgramWithSource(context->context, 1, (const char **) &source_str, &(str_len), &err);
     if (err != CL_SUCCESS) {
         clog_failure("create program");
         clog_remove_space();

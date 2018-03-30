@@ -3,16 +3,16 @@
 #include <algorithm>
 #include <chrono>
 #include <cstring>
+#include <iomanip>
 
 #include "clutil/cl_buffer.hpp"
-#include "clutil/btnc_seq_gen.h"
 #include "clutil/cl_bitonic_sort.hpp"
 
 using namespace std;
 
 float random_float(float min, float max);
 
-#define TEST_SIZE_CL_BUFFER 100000
+#define TEST_SIZE_CL_BUFFER (0x1<<19)
 
 int main() {
 	cout << "-- CL-Util --" << endl;
@@ -33,7 +33,7 @@ int main() {
 	srand(time(NULL));
 
 	for(size_t i = 0; i < TEST_SIZE_CL_BUFFER; i++){
-		real_vector.push_back(random_float(-100213000.0, 100213000.0));
+		real_vector.push_back(random_float(-100, 100));//random_float(-1000.0, 1000.0));
 	}
 
 	auto add_err = val.add(TEST_SIZE_CL_BUFFER);
@@ -55,7 +55,9 @@ int main() {
 	idx.write();
 	val.write();
 
-	CLBitonicSorter cl_sorter(sorter, TEST_SIZE_CL_BUFFER);
+	std::cout << "Size: " << TEST_SIZE_CL_BUFFER << " " << std::endl;
+
+	CLBitonicSorter cl_sorter(sorter);
 	auto out = cl_sorter.sort(&idx, &val);
 
 	std::cout << "finished function call in: " << out.duration_usec/1e6 << " s" << std::endl;
@@ -64,10 +66,15 @@ int main() {
 	val_vec = val.read();
 	float cursor = (*val_vec)[(*idx_vec)[0]];
 
-	for(size_t i = 0; i < TEST_SIZE_CL_BUFFER; i++){
-		//std::cout << (*idx_vec)[i]  << " ";
-	}
+	//for(size_t i = 0; i < TEST_SIZE_CL_BUFFER; i++){
+	//	std::cout << (*idx_vec)[i]  << " ";
+	//}
 	//std::cout << std::endl;
+
+	for (size_t i = 0; i < TEST_SIZE_CL_BUFFER; i++) {
+		//std::cout << std::setprecision(3) << (*val_vec)[(*idx_vec)[i]] << " ";
+	}
+	std::cout << std::endl;
 	
 	for(size_t i = 1; i < idx_vec->size(); i++){
 		float next = (*val_vec)[(*idx_vec)[i]];
